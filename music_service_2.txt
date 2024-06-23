@@ -1,43 +1,33 @@
--- Создание таблицы Genres (Жанры)
 CREATE TABLE Genres (
     genre_id INT PRIMARY KEY,
     genre_name VARCHAR(255) NOT NULL
 );
 
--- Создание таблицы Artists (Артисты)
 CREATE TABLE Artists (
     artist_id INT PRIMARY KEY,
     artist_name VARCHAR(255) NOT NULL
 );
 
--- Создание таблицы Albums (Альбомы)
 CREATE TABLE Albums (
     album_id INT PRIMARY KEY,
     album_name VARCHAR(255) NOT NULL,
-    release_year INT,
-    -- Добавим внешний ключ для связи с таблицей Artists
-    -- artist_id INT,
-    -- FOREIGN KEY (artist_id) REFERENCES Artists(artist_id)
+    release_year INT CHECK (release_year >= 1900)
 );
 
--- Создание таблицы Tracks (Треки)
 CREATE TABLE Tracks (
     track_id INT PRIMARY KEY,
     track_name VARCHAR(255) NOT NULL,
-    duration INT,
-    -- Добавим внешний ключ для связи с таблицей Albums
+    duration INT CHECK (duration > 0),
     album_id INT,
     FOREIGN KEY (album_id) REFERENCES Albums(album_id)
 );
 
--- Создание таблицы Compilations (Сборники)
 CREATE TABLE Compilations (
     compilation_id INT PRIMARY KEY,
     compilation_name VARCHAR(255) NOT NULL,
-    release_year INT
+    release_year INT CHECK (release_year >= 1900)
 );
 
--- Создание таблицы CompilationTracks (Треки сборника)
 CREATE TABLE CompilationTracks (
     compilation_id INT,
     track_id INT,
@@ -46,11 +36,18 @@ CREATE TABLE CompilationTracks (
     FOREIGN KEY (track_id) REFERENCES Tracks(track_id)
 );
 
--- Создание таблицы AlbumArtists (Исполнители альбомов)
 CREATE TABLE AlbumArtists (
     album_id INT,
     artist_id INT,
     PRIMARY KEY (album_id, artist_id),
     FOREIGN KEY (album_id) REFERENCES Albums(album_id),
     FOREIGN KEY (artist_id) REFERENCES Artists(artist_id)
+);
+
+CREATE TABLE ArtistGenres (
+    artist_id INT,
+    genre_id INT,
+    PRIMARY KEY (artist_id, genre_id),
+    FOREIGN KEY (artist_id) REFERENCES Artists(artist_id),
+    FOREIGN KEY (genre_id) REFERENCES Genres(genre_id)
 );
